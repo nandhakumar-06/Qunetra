@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Checkout — NovaMart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#060d1a;--surface:#0d1929;--surface2:#111f33;
+  --border:#1a2f4a;--border2:#243852;
+  --text:#e8f0fe;--muted:#7b9abf;--dim:#3d5a7a;
+  --accent:#00d4ff;--accent2:#ff6b35;--accent3:#39d353;
+  --price:#4ade80;--danger:#ff4757;
+  --shadow:0 8px 32px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(6,13,26,.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.nav{max-width:1300px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;gap:16px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text)}
+.logo-mark{
+  width:38px;height:38px;border-radius:10px;
+  background:linear-gradient(135deg,#00d4ff,#0066cc,#39d353);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#fff;
+  box-shadow:0 0 20px rgba(0,212,255,.3);
+}
+.brand-name{font-size:20px;font-weight:700}.brand-name span{color:var(--accent)}
+.secure-badge{
+  margin-left:auto;display:flex;align-items:center;gap:6px;
+  color:var(--muted);font-size:12px;font-weight:500;
+}
+.secure-badge::before{content:'🔒'}
+.btn{
+  border:1px solid var(--border2);background:var(--surface2);
+  color:var(--text);padding:8px 16px;border-radius:8px;cursor:pointer;
+  font-family:'Sora',sans-serif;font-size:13px;font-weight:500;transition:all .2s;
+}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* progress bar */
+.progress-bar{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:16px 24px;
+}
+.progress-inner{
+  max-width:1300px;margin:0 auto;
+  display:flex;align-items:center;gap:0;
+}
+.step{
+  display:flex;align-items:center;gap:8px;font-size:13px;
+  flex:1;position:relative;
+}
+.step-num{
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;border:2px solid var(--border2);
+  background:var(--surface2);color:var(--muted);flex-shrink:0;
+}
+.step.done .step-num{background:var(--accent3);border-color:var(--accent3);color:#000}
+.step.active .step-num{background:var(--accent);border-color:var(--accent);color:#000}
+.step-label{font-weight:500;color:var(--muted)}
+.step.active .step-label{color:var(--text)}
+.step.done .step-label{color:var(--accent3)}
+.step-line{flex:1;height:1px;background:var(--border);margin:0 8px}
+.step.done .step-line{background:var(--accent3)}
+
+main{max-width:1300px;margin:0 auto;padding:32px 24px}
+.checkout-grid{display:grid;grid-template-columns:1fr 400px;gap:32px;align-items:start}
+@media(max-width:900px){.checkout-grid{grid-template-columns:1fr}}
+
+/* sections */
+.section{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:24px;margin-bottom:20px;
+}
+.section-title{
+  font-size:16px;font-weight:700;margin-bottom:20px;
+  display:flex;align-items:center;gap:8px;
+}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* form */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.form-group label{font-size:13px;font-weight:600;color:var(--muted)}
+.form-group input{
+  padding:12px 14px;border-radius:8px;border:1px solid var(--border2);
+  background:var(--surface2);color:var(--text);font-family:'Sora',sans-serif;font-size:14px;
+  outline:none;transition:border-color .2s;
+}
+.form-group input:focus{border-color:var(--accent)}
+.form-group input.err{border-color:var(--danger)}
+.field-err{color:var(--danger);font-size:11px;margin-top:2px;display:none}
+.form-group.has-err .field-err{display:block}
+
+/* cart items */
+.cart-item{
+  display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--border);
+}
+.cart-item:last-child{border-bottom:none}
+.item-thumb{
+  width:56px;height:56px;border-radius:8px;object-fit:cover;
+  border:1px solid var(--border);
+}
+.item-name{font-size:14px;font-weight:600;line-height:1.3}
+.item-qty{font-size:12px;color:var(--muted);margin-top:3px}
+.item-price{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:var(--price);text-align:right}
+.remove-btn{
+  background:none;border:none;color:var(--dim);cursor:pointer;
+  font-size:16px;padding:4px;transition:color .15s;margin-left:8px;
+}
+.remove-btn:hover{color:var(--danger)}
+
+/* promo */
+.promo-row{display:flex;gap:8px;margin-bottom:16px}
+.promo-row input{
+  flex:1;padding:10px 14px;border-radius:8px;border:1px solid var(--border2);
+  background:var(--surface2);color:var(--text);font-family:'Sora',sans-serif;font-size:14px;
+  outline:none;transition:border-color .2s;
+}
+.promo-row input:focus{border-color:var(--accent)}
+.promo-apply{
+  background:var(--surface2);border:1px solid var(--border2);color:var(--accent);
+  padding:10px 16px;border-radius:8px;cursor:pointer;font-family:'Sora',sans-serif;
+  font-size:13px;font-weight:600;transition:all .2s;white-space:nowrap;
+}
+.promo-apply:hover{background:rgba(0,212,255,.08)}
+.promo-success{
+  background:rgba(57,211,83,.08);border:1px solid rgba(57,211,83,.25);
+  color:var(--accent3);padding:8px 12px;border-radius:8px;font-size:13px;
+  display:none;margin-bottom:12px;
+}
+.promo-success.show{display:block}
+
+/* totals */
+.totals-table{width:100%}
+.totals-table tr td:last-child{text-align:right;font-family:'Space Mono',monospace}
+.totals-table td{padding:6px 0;font-size:14px;color:var(--muted)}
+.totals-table .total-row td{
+  font-size:18px;font-weight:700;color:var(--text);
+  border-top:1px dashed var(--border);padding-top:12px;margin-top:8px;
+}
+.totals-table .discount-row td{color:var(--accent3)}
+.pay-btn{
+  width:100%;padding:16px;border-radius:10px;border:none;margin-top:20px;
+  font-family:'Sora',sans-serif;font-size:16px;font-weight:700;cursor:pointer;
+  background:linear-gradient(90deg,#0066cc,#00d4ff);color:#000;
+  transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.pay-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,212,255,.3)}
+.pay-btn:disabled{background:var(--dim);color:var(--muted);cursor:not-allowed;transform:none}
+.pay-btn .spinner{
+  width:18px;height:18px;border:2px solid rgba(0,0,0,.2);
+  border-top-color:#000;border-radius:50%;animation:spin .7s linear infinite;display:none;
+}
+.pay-btn.loading .spinner{display:block}
+.pay-btn.loading .pay-text{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.trust-badges{display:flex;gap:16px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.trust{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px}
+
+/* success screen */
+.success-screen{
+  display:none;text-align:center;padding:48px 24px;
+}
+.success-screen.show{display:block}
+.success-icon{
+  width:80px;height:80px;border-radius:50%;margin:0 auto 24px;
+  background:rgba(57,211,83,.15);border:2px solid rgba(57,211,83,.4);
+  display:flex;align-items:center;justify-content:center;font-size:36px;
+}
+.success-screen h2{font-size:26px;font-weight:700;color:var(--accent3);margin-bottom:8px}
+.success-screen p{color:var(--muted);margin-bottom:24px}
+.receipt-card{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;padding:20px;text-align:left;max-width:400px;margin:0 auto 24px;
+}
+.receipt-row{display:flex;justify-content:space-between;padding:6px 0;font-size:14px}
+.receipt-row.total{font-weight:700;font-size:16px;border-top:1px dashed var(--border);margin-top:4px;padding-top:12px}
+.receipt-row span:last-child{font-family:'Space Mono',monospace;color:var(--price)}
+
+/* empty cart */
+.empty-cart{text-align:center;padding:48px 24px;color:var(--muted)}
+.empty-cart .icon{font-size:48px;margin-bottom:16px}
+.empty-cart h3{font-size:20px;font-weight:600;color:var(--text);margin-bottom:8px}
+
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(8px);
+  padding:10px 18px;border-radius:10px;font-size:13px;font-weight:500;
+  border:1px solid;z-index:9999;opacity:0;transition:all .25s;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{background:#0d2617;border-color:#1b4730;color:#b7f3d0}
+.toast.error{background:#2b1516;border-color:#542427;color:#fecaca}
+.toast.warning{background:#2a2410;border-color:#4a3800;color:#fde68a}
+.toast.info{background:var(--surface2);border-color:var(--accent);color:var(--accent)}
+
+footer{border-top:1px solid var(--border);margin-top:48px;padding:24px;text-align:center;color:var(--muted);font-size:13px}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="brand" href="/"><div class="logo-mark">NM</div><div class="brand-name">Nova<span>Mart</span></div></a>
+    <span class="secure-badge">Secure Checkout</span>
+  </div>
+</header>
+
+<div class="progress-bar">
+  <div class="progress-inner">
+    <div class="step done" id="step1"><div class="step-num">✓</div><span class="step-label">Cart</span></div>
+    <div class="step-line"></div>
+    <div class="step active" id="step2"><div class="step-num">2</div><span class="step-label">Payment</span></div>
+    <div class="step-line"></div>
+    <div class="step" id="step3"><div class="step-num">3</div><span class="step-label">Confirmation</span></div>
+  </div>
+</div>
+
+<main>
+  <!-- Empty cart state -->
+  <div class="empty-cart" id="emptyCart" style="display:none">
+    <div class="icon">🛒</div>
+    <h3>Your cart is empty</h3>
+    <p>Add some products before checking out.</p>
+    <br/>
+    <button class="btn" onclick="location.href='/'">← Browse Products</button>
+  </div>
+
+  <!-- Checkout grid -->
+  <div class="checkout-grid" id="checkoutGrid">
+    <div>
+      <!-- Payment form -->
+      <div class="section" id="paySection">
+        <div class="section-title">Payment Details</div>
+        <div class="form-group" id="fg-name">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" placeholder="Nandha Kumar"/>
+          <div class="field-err">Name is required</div>
+        </div>
+        <div class="form-group" id="fg-email">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="you@example.com"/>
+          <div class="field-err">Valid email is required</div>
+        </div>
+        <div class="form-group" id="fg-card">
+          <label for="card">Card Number</label>
+          <input type="tel" id="card" inputmode="numeric" maxlength="19" placeholder="4242 4242 4242 4242"/>
+          <div class="field-err">16-digit card number required</div>
+        </div>
+        <div class="form-row">
+          <div class="form-group" id="fg-exp">
+            <label for="exp">Expiry (MM/YY)</label>
+            <input type="text" id="exp" placeholder="05/28" maxlength="5"/>
+            <div class="field-err">Format: MM/YY</div>
+          </div>
+          <div class="form-group" id="fg-cvv">
+            <label for="cvv">CVV</label>
+            <input type="tel" id="cvv" inputmode="numeric" maxlength="4" placeholder="123"/>
+            <div class="field-err">3–4 digit CVV</div>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-top:4px">
+          🔒 Demo store — no real card data is processed. Use any 16-digit number.
+        </p>
+      </div>
+
+      <!-- Billing address (optional) -->
+      <div class="section">
+        <div class="section-title">Billing Address</div>
+        <div class="form-group">
+          <label>Address Line 1</label>
+          <input type="text" placeholder="123 MG Road"/>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" placeholder="Chennai"/>
+          </div>
+          <div class="form-group">
+            <label>Pincode</label>
+            <input type="text" placeholder="600001"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>State</label>
+          <input type="text" placeholder="Tamil Nadu"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order summary sidebar -->
+    <div>
+      <div class="section">
+        <div class="section-title">Order Summary</div>
+        <div id="cartItems"></div>
+
+        <div class="promo-row">
+          <input type="text" id="promoInput" placeholder="Promo code (SAVE10, FREESHIP, FLAT200)"/>
+          <button class="promo-apply" onclick="applyPromo()">Apply</button>
+        </div>
+        <div class="promo-success" id="promoMsg"></div>
+
+        <table class="totals-table">
+          <tr><td>Subtotal</td><td id="subtotalEl">₹0</td></tr>
+          <tr><td>Tax (GST 18%)</td><td id="taxEl">₹0</td></tr>
+          <tr><td>Shipping</td><td id="shippingEl">₹199</td></tr>
+          <tr class="discount-row"><td>Discount</td><td id="discountEl">−₹0</td></tr>
+          <tr class="total-row"><td>Total</td><td id="totalEl">₹0</td></tr>
+        </table>
+
+        <button class="pay-btn" id="payBtn" onclick="placeOrder()">
+          <div class="spinner"></div>
+          <span class="pay-text">🔐 Place Order</span>
+        </button>
+
+        <div class="trust-badges">
+          <span class="trust">🔒 SSL Secured</span>
+          <span class="trust">🛡️ Safe Checkout</span>
+          <span class="trust">↩️ Easy Returns</span>
+        </div>
+      </div>
+
+      <button class="btn" style="width:100%" onclick="location.href='/'">← Continue Shopping</button>
+    </div>
+  </div>
+
+  <!-- Success screen -->
+  <div class="success-screen section" id="successScreen">
+    <div class="success-icon">✓</div>
+    <h2>Order Confirmed!</h2>
+    <p>Your order has been placed successfully. A confirmation will be sent to your email.</p>
+    <div class="receipt-card" id="receiptCard"></div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn" onclick="downloadReceipt()">⬇️ Download Receipt</button>
+      <button class="btn" style="background:var(--accent);border-color:var(--accent);color:#000" onclick="location.href='/'">
+        Continue Shopping
+      </button>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+<footer>© 2025 NovaMart · Demo store · No real payments processed</footer>
+
+<script>
+const INR=new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0});
+let cart=JSON.parse(localStorage.getItem('nm_cart')||'{}');
+let promoCode='';let promoData=null;let lastOrder=null;
+
+function saveCart(){localStorage.setItem('nm_cart',JSON.stringify(cart));}
+
+function computeTotals(){
+  const subtotal=Object.values(cart).reduce((s,x)=>s+x.price*x.qty,0);
+  const tax=Math.round(subtotal*.18);
+  let shipping=subtotal>0?199:0;
+  let discount=0;
+  if(promoData){
+    if(promoData.type==='percent') discount=Math.round(subtotal*promoData.value/100);
+    else if(promoData.type==='shipping') shipping=0;
+    else if(promoData.type==='flat') discount=parseInt(promoData.value);
+  }
+  const total=Math.max(0,subtotal+tax+shipping-discount);
+  return{subtotal,tax,shipping,discount,total};
+}
+
+function renderCart(){
+  const items=Object.entries(cart);
+  if(!items.length){
+    document.getElementById('emptyCart').style.display='block';
+    document.getElementById('checkoutGrid').style.display='none';
+    return;
+  }
+  const el=document.getElementById('cartItems');
+  el.innerHTML='';
+  items.forEach(([id,item])=>{
+    const div=document.createElement('div');
+    div.className='cart-item';
+    div.innerHTML=`
+      <img class="item-thumb" src="${item.img||''}" alt="${item.name}"
+        onerror="this.src='https://via.placeholder.com/56/0d1929/7b9abf?text=?'"/>
+      <div>
+        <div class="item-name">${item.name}</div>
+        <div class="item-qty">Qty: ${item.qty} × ${INR.format(item.price)}</div>
+      </div>
+      <div style="display:flex;align-items:center">
+        <div class="item-price">${INR.format(item.price*item.qty)}</div>
+        <button class="remove-btn" onclick="removeItem('${id}')" title="Remove">✕</button>
+      </div>
+    `;
+    el.appendChild(div);
+  });
+  updateTotals();
+}
+
+function removeItem(id){
+  delete cart[id]; saveCart(); renderCart();
+  if(!Object.keys(cart).length){
+    document.getElementById('emptyCart').style.display='block';
+    document.getElementById('checkoutGrid').style.display='none';
+  }
+}
+
+function updateTotals(){
+  const{subtotal,tax,shipping,discount,total}=computeTotals();
+  document.getElementById('subtotalEl').textContent=INR.format(subtotal);
+  document.getElementById('taxEl').textContent=INR.format(tax);
+  document.getElementById('shippingEl').textContent=shipping===0?'FREE':INR.format(shipping);
+  document.getElementById('discountEl').textContent=`−${INR.format(discount)}`;
+  document.getElementById('totalEl').textContent=INR.format(total);
+}
+
+async function applyPromo(){
+  const code=document.getElementById('promoInput').value.trim();
+  if(!code){promoData=null;promoCode='';updateTotals();
+    document.getElementById('promoMsg').classList.remove('show');return;}
+  try{
+    const res=await fetch('/api/promo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})});
+    const data=await res.json();
+    if(data.valid){
+      promoData=data;promoCode=code.toUpperCase();
+      const msg=document.getElementById('promoMsg');
+      msg.textContent=`✓ ${data.description}`;msg.classList.add('show');
+      updateTotals();toast(`Promo applied: ${data.description}`,'success');
+    }else{
+      promoData=null;promoCode='';
+      document.getElementById('promoMsg').classList.remove('show');
+      toast(data.error||'Invalid promo code','error');
+    }
+  }catch{toast('Could not validate promo','error');}
+}
+
+function validate(){
+  let ok=true;
+  const checks=[
+    {id:'name',fgId:'fg-name',fn:v=>v.trim().length>0},
+    {id:'email',fgId:'fg-email',fn:v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)},
+    {id:'card',fgId:'fg-card',fn:v=>v.replace(/\s+/g,'').length===16},
+    {id:'exp',fgId:'fg-exp',fn:v=>/^\d{2}\/\d{2}$/.test(v)},
+    {id:'cvv',fgId:'fg-cvv',fn:v=>/^\d{3,4}$/.test(v)},
+  ];
+  checks.forEach(({id,fgId,fn})=>{
+    const el=document.getElementById(id);
+    const fg=document.getElementById(fgId);
+    const valid=fn(el.value);
+    el.classList.toggle('err',!valid);
+    fg.classList.toggle('has-err',!valid);
+    if(!valid)ok=false;
+  });
+  return ok;
+}
+
+function luhn(n){
+  let s=0,d=false;
+  for(let i=n.length-1;i>=0;i--){let x=parseInt(n[i],10);if(d){x*=2;if(x>9)x-=9;}s+=x;d=!d;}
+  return s%10===0;
+}
+
+async function placeOrder(){
+  if(!validate())return;
+  const card=document.getElementById('card').value.replace(/\s+/g,'');
+  if(!luhn(card)){
+    document.getElementById('card').classList.add('err');
+    document.getElementById('fg-card').classList.add('has-err');
+    toast('Invalid card number (Luhn check failed)','error');return;
+  }
+  const items=Object.entries(cart).map(([id,x])=>({id,qty:x.qty}));
+  if(!items.length){toast('Cart is empty','error');return;}
+
+  const btn=document.getElementById('payBtn');
+  btn.classList.add('loading');btn.disabled=true;
+
+  try{
+    const res=await fetch('/api/orders',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        name:document.getElementById('name').value.trim(),
+        email:document.getElementById('email').value.trim(),
+        items,promo:promoCode
+      })
+    });
+    const data=await res.json();
+    if(!res.ok){toast(data.error||'Order failed','error');return;}
+
+    lastOrder=data;
+    cart={};saveCart();
+
+    // Mark step 3 as done
+    document.getElementById('step2').className='step done';
+    document.getElementById('step2').querySelector('.step-num').textContent='✓';
+    document.getElementById('step3').className='step active';
+
+    // Show success
+    document.getElementById('checkoutGrid').style.display='none';
+    const ss=document.getElementById('successScreen');
+    ss.classList.add('show');
+
+    // Build receipt
+    const t=data.totals;
+    document.getElementById('receiptCard').innerHTML=`
+      <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:12px">
+        ${data.order_id} · ${data.date}
+      </div>
+      ${data.items.map(i=>`
+        <div class="receipt-row">
+          <span>${i.name} ×${i.qty}</span>
+          <span>${INR.format(i.price*i.qty)}</span>
+        </div>`).join('')}
+      <div class="receipt-row"><span>Tax (GST)</span><span>${INR.format(t.tax)}</span></div>
+      <div class="receipt-row"><span>Shipping</span><span>${t.shipping===0?'FREE':INR.format(t.shipping)}</span></div>
+      ${t.discount>0?`<div class="receipt-row" style="color:var(--accent3)"><span>Discount</span><span>−${INR.format(t.discount)}</span></div>`:''}
+      <div class="receipt-row total"><span>Total Paid</span><span>${INR.format(t.total)}</span></div>
+      <div style="margin-top:12px;font-size:11px;color:var(--muted)">Auth: ${data.auth_id}</div>
+    `;
+  }catch(err){
+    toast('Server error. Is Flask running?','error');
+  }finally{
+    btn.classList.remove('loading');btn.disabled=false;
+  }
+}
+
+function downloadReceipt(){
+  if(!lastOrder)return;
+  const t=lastOrder.totals;
+  const lines=[
+    '=== NovaMart Receipt ===',
+    `Date:   ${lastOrder.date}`,
+    `Order:  ${lastOrder.order_id}`,
+    `Auth:   ${lastOrder.auth_id}`,
+    '---',
+    ...lastOrder.items.map(i=>`${i.name} x${i.qty}  @${INR.format(i.price)}  =  ${INR.format(i.price*i.qty)}`),
+    '---',
+    `Subtotal: ${INR.format(t.subtotal)}`,
+    `Tax:      ${INR.format(t.tax)}`,
+    `Shipping: ${t.shipping===0?'FREE':INR.format(t.shipping)}`,
+    `Discount: -${INR.format(t.discount)}`,
+    `TOTAL:    ${INR.format(t.total)}`,
+    '',
+    'Note: Demo payment — no real transaction processed.'
+  ];
+  const blob=new Blob([lines.join('\n')],{type:'text/plain'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`${lastOrder.order_id}_receipt.txt`;
+  a.click();
+}
+
+let toastT;
+function toast(msg,type='info'){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.className=`toast ${type} show`;
+  clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2400);
+}
+
+// Card formatting
+document.getElementById('card').addEventListener('input',e=>{
+  const d=e.target.value.replace(/\D/g,'').slice(0,16);
+  e.target.value=(d.match(/.{1,4}/g)||[]).join(' ');
+});
+// Expiry formatting
+document.getElementById('exp').addEventListener('input',e=>{
+  let v=e.target.value.replace(/\D/g,'');
+  if(v.length>2)v=v.slice(0,2)+'/'+v.slice(2,4);
+  e.target.value=v;
+});
+
+renderCart();
+</script>
+</body>
+</html>

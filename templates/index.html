@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>NovaMart — Tech Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#060d1a;--surface:#0d1929;--surface2:#111f33;
+  --border:#1a2f4a;--border2:#243852;
+  --text:#e8f0fe;--muted:#7b9abf;--dim:#3d5a7a;
+  --accent:#00d4ff;--accent2:#ff6b35;--accent3:#39d353;
+  --price:#4ade80;--danger:#ff4757;
+  --card-hover:#141e32;
+  --shadow:0 8px 32px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ── header ── */
+header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(6,13,26,.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.nav{max-width:1300px;margin:0 auto;padding:0 24px;height:64px;
+  display:flex;align-items:center;gap:24px;}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text)}
+.logo-mark{
+  width:38px;height:38px;border-radius:10px;
+  background:linear-gradient(135deg,#00d4ff 0%,#0066cc 50%,#39d353 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#fff;
+  box-shadow:0 0 20px rgba(0,212,255,.35);
+}
+.brand-name{font-size:20px;font-weight:700;letter-spacing:-.3px}
+.brand-name span{color:var(--accent)}
+
+.search-bar{
+  flex:1;max-width:540px;margin:0 auto;
+  display:flex;height:40px;border-radius:10px;
+  border:1px solid var(--border2);overflow:hidden;
+  background:var(--surface);
+  transition:border-color .2s;
+}
+.search-bar:focus-within{border-color:var(--accent)}
+.search-bar input{
+  flex:1;border:none;outline:none;background:transparent;
+  color:var(--text);padding:0 14px;font-family:'Sora',sans-serif;font-size:14px;
+}
+.search-bar input::placeholder{color:var(--muted)}
+.search-bar button{
+  background:var(--accent);border:none;color:#000;
+  padding:0 16px;cursor:pointer;font-weight:600;font-size:13px;
+  font-family:'Sora',sans-serif;transition:opacity .15s;
+}
+.search-bar button:hover{opacity:.85}
+
+.nav-actions{display:flex;align-items:center;gap:10px;margin-left:auto}
+.btn{
+  border:1px solid var(--border2);background:var(--surface2);
+  color:var(--text);padding:8px 16px;border-radius:8px;
+  cursor:pointer;font-family:'Sora',sans-serif;font-size:13px;font-weight:500;
+  transition:all .2s;white-space:nowrap;
+}
+.btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+.cart-btn{position:relative}
+.cart-badge{
+  position:absolute;top:-6px;right:-6px;
+  background:var(--accent2);color:#fff;
+  border-radius:999px;min-width:20px;height:20px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;padding:0 5px;
+}
+
+/* ── hero ── */
+.hero{
+  background:linear-gradient(160deg,#070f20 0%,#0a1830 40%,#061220 100%);
+  border-bottom:1px solid var(--border);
+  padding:40px 24px;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(0,212,255,.07) 0%,transparent 70%);
+}
+.hero-inner{max-width:1300px;margin:0 auto;position:relative;z-index:1}
+.hero h2{font-size:clamp(22px,3vw,34px);font-weight:700;letter-spacing:-.5px;margin-bottom:8px}
+.hero h2 em{font-style:normal;color:var(--accent)}
+.hero p{color:var(--muted);font-size:14px;max-width:420px}
+.tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.tag{
+  background:var(--surface2);border:1px solid var(--border2);
+  color:var(--muted);padding:4px 12px;border-radius:999px;font-size:12px;cursor:pointer;
+  transition:all .2s;
+}
+.tag:hover,.tag.active{background:rgba(0,212,255,.1);border-color:var(--accent);color:var(--accent)}
+
+/* ── catalog grid ── */
+main{max-width:1300px;margin:0 auto;padding:32px 24px}
+.section-header{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;
+}
+.section-header h3{font-size:18px;font-weight:600}
+.section-header span{color:var(--muted);font-size:13px}
+
+.catalog{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  gap:20px;
+}
+
+/* ── product card ── */
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;cursor:pointer;
+  transition:all .25s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;
+}
+.card:hover{
+  border-color:var(--border2);background:var(--card-hover);
+  transform:translateY(-4px);box-shadow:var(--shadow),0 0 0 1px var(--border2);
+}
+.card-img-wrap{
+  position:relative;height:200px;overflow:hidden;
+  background:var(--surface2);
+}
+.card-img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .4s cubic-bezier(.4,0,.2,1);
+}
+.card:hover .card-img{transform:scale(1.05)}
+.badge-wrap{position:absolute;top:10px;left:10px;display:flex;gap:6px;flex-wrap:wrap}
+.badge{
+  font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px;letter-spacing:.4px;
+}
+.badge.stock-low{background:rgba(255,107,53,.15);border:1px solid rgba(255,107,53,.4);color:#ff6b35}
+.badge.new{background:rgba(57,211,83,.15);border:1px solid rgba(57,211,83,.4);color:#39d353}
+.badge.hot{background:rgba(0,212,255,.15);border:1px solid rgba(0,212,255,.4);color:#00d4ff}
+
+.card-body{padding:16px;flex:1;display:flex;flex-direction:column;gap:10px}
+.card-name{font-size:15px;font-weight:600;line-height:1.35;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-desc{color:var(--muted);font-size:12px;line-height:1.5;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+.rating{display:flex;align-items:center;gap:6px}
+.stars{color:#f59e0b;font-size:13px;letter-spacing:.5px}
+.rating-count{color:var(--muted);font-size:12px}
+
+.card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:6px}
+.price{font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:var(--price)}
+.price-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.add-btn{
+  background:var(--accent);color:#000;border:none;
+  padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;
+  font-family:'Sora',sans-serif;cursor:pointer;
+  transition:all .2s;white-space:nowrap;
+}
+.add-btn:hover{opacity:.85;transform:scale(1.04)}
+.add-btn:disabled{background:var(--dim);color:var(--muted);cursor:not-allowed;transform:none}
+
+.out-of-stock{
+  text-align:center;padding:8px;font-size:12px;
+  color:var(--danger);border-top:1px solid var(--border);
+  letter-spacing:.3px;
+}
+
+/* ── skeleton loader ── */
+.skel{animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.skel-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.skel-img{height:200px;background:var(--surface2)}
+.skel-body{padding:16px;display:flex;flex-direction:column;gap:10px}
+.skel-line{height:14px;background:var(--surface2);border-radius:4px}
+.skel-line.short{width:60%}
+.skel-line.shorter{width:40%}
+
+/* ── mini cart drawer hint ── */
+.cart-hint{
+  position:fixed;bottom:24px;right:24px;z-index:200;
+  background:var(--surface2);border:1px solid var(--accent);
+  padding:14px 18px;border-radius:12px;
+  box-shadow:var(--shadow),0 0 20px rgba(0,212,255,.15);
+  display:none;align-items:center;gap:12px;
+  animation:slideUp .3s ease;
+}
+.cart-hint.show{display:flex}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.cart-hint-text{font-size:14px;font-weight:500}
+.cart-hint-text span{color:var(--accent);font-family:'Space Mono',monospace}
+
+/* ── toast ── */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(8px);
+  padding:10px 18px;border-radius:10px;font-size:13px;font-weight:500;
+  border:1px solid;z-index:9999;opacity:0;transition:all .25s;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{background:#0d2617;border-color:#1b4730;color:#b7f3d0}
+.toast.error{background:#2b1516;border-color:#542427;color:#fecaca}
+.toast.warning{background:#2a2410;border-color:#4a3800;color:#fde68a}
+.toast.info{background:var(--surface2);border-color:var(--accent);color:var(--accent)}
+
+footer{
+  border-top:1px solid var(--border);margin-top:48px;
+  padding:24px;text-align:center;color:var(--muted);font-size:13px;
+}
+
+@media(max-width:680px){.search-bar{max-width:none;order:3;width:100%}
+  .nav{flex-wrap:wrap;height:auto;padding:12px 16px;gap:12px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="brand" href="/">
+      <div class="logo-mark">NM</div>
+      <div class="brand-name">Nova<span>Mart</span></div>
+    </a>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search products…" oninput="filterProducts()"/>
+      <button>Search</button>
+    </div>
+    <div class="nav-actions">
+      <button class="btn cart-btn" onclick="goToCart()">
+        🛒 Cart <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <h2>Next-gen tech,<br/><em>delivered fast.</em></h2>
+    <p>Premium gadgets curated for makers, creators, and power users.</p>
+    <div class="tags" id="categoryTags">
+      <span class="tag active" data-cat="All" onclick="filterCategory(this)">All</span>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="section-header">
+    <h3>Featured Products</h3>
+    <span id="productCount">Loading…</span>
+  </div>
+  <div class="catalog" id="catalog">
+    <!-- skeleton -->
+    ${[1,2,3,4,5,6].map(()=>`
+    <div class="skel-card skel">
+      <div class="skel-img"></div>
+      <div class="skel-body">
+        <div class="skel-line"></div>
+        <div class="skel-line short"></div>
+        <div class="skel-line shorter"></div>
+      </div>
+    </div>`).join('')}
+  </div>
+</main>
+
+<div class="cart-hint" id="cartHint">
+  <span>🛍️</span>
+  <div class="cart-hint-text">Cart updated — <span id="hintCount">0</span> items</div>
+  <button class="add-btn" onclick="goToCart()">View Cart →</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+  © 2025 NovaMart · Demo store · No real payments processed
+</footer>
+
+<script>
+const INR = new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0});
+const API  = '';        // same origin — Flask serves everything
+let allProducts = [];
+let cart = JSON.parse(localStorage.getItem('nm_cart')||'{}');
+
+function saveCart(){ localStorage.setItem('nm_cart', JSON.stringify(cart)); updateBadge(); }
+function totalItems(){ return Object.values(cart).reduce((s,x)=>s+x.qty,0); }
+function updateBadge(){
+  document.getElementById('cartBadge').textContent = totalItems();
+  const h = document.getElementById('cartHint');
+  document.getElementById('hintCount').textContent = totalItems();
+  if(totalItems()>0){h.classList.add('show');clearTimeout(h._t);h._t=setTimeout(()=>h.classList.remove('show'),3000)}
+}
+
+function starsHTML(rating){
+  const full=Math.floor(rating), half=rating%1>=.5;
+  return '★'.repeat(full)+(half?'½':'')+'☆'.repeat(5-full-(half?1:0));
+}
+
+function addToCart(e, p){
+  e.stopPropagation();
+  const cur = cart[p.Product_ID]?.qty||0;
+  if(cur>=p.Stock){toast('Max stock reached','warning');return;}
+  cart[p.Product_ID]={qty:cur+1,price:p.Price_INR,name:p.Name,img:p.Image_URL};
+  saveCart();
+  toast(`${p.Name} added to cart`,'success');
+}
+
+function filterCategory(el){
+  document.querySelectorAll('.tag').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderCatalog(el.dataset.cat);
+}
+
+function filterProducts(){
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const activeCat = document.querySelector('.tag.active')?.dataset.cat||'All';
+  const filtered = allProducts.filter(p=>{
+    const matchQ = !q || p.Name.toLowerCase().includes(q) || p.Description.toLowerCase().includes(q) || p.Category.toLowerCase().includes(q);
+    const matchC = activeCat==='All'||p.Category===activeCat;
+    return matchQ && matchC;
+  });
+  document.getElementById('productCount').textContent = `${filtered.length} products`;
+  buildCards(filtered);
+}
+
+function renderCatalog(cat='All'){
+  const filtered = cat==='All' ? allProducts : allProducts.filter(p=>p.Category===cat);
+  document.getElementById('productCount').textContent = `${filtered.length} products`;
+  buildCards(filtered);
+}
+
+function buildCards(products){
+  const el = document.getElementById('catalog');
+  el.innerHTML='';
+  if(!products.length){
+    el.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted)">No products found</div>';
+    return;
+  }
+  products.forEach(p=>{
+    const inCart = cart[p.Product_ID]?.qty||0;
+    const isLowStock = p.Stock>0 && p.Stock<=5;
+    const isNew = p.Rating>=4.6;
+    const isHot = p.Reviews>=3000;
+
+    const card = document.createElement('div');
+    card.className='card';
+    card.onclick=()=>goToProduct(p.Product_ID);
+    card.innerHTML=`
+      <div class="card-img-wrap">
+        <img class="card-img" src="${p.Image_URL}" alt="${p.Name}" loading="lazy"
+          onerror="this.src='https://via.placeholder.com/400x200/0d1929/7b9abf?text=No+Image'"/>
+        <div class="badge-wrap">
+          ${isLowStock?'<span class="badge stock-low">Low Stock</span>':''}
+          ${isNew?'<span class="badge new">Top Rated</span>':''}
+          ${isHot?'<span class="badge hot">🔥 Hot</span>':''}
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${p.Name}</div>
+        <div class="card-desc">${p.Description}</div>
+        <div class="rating">
+          <span class="stars">${starsHTML(p.Rating)}</span>
+          <span class="rating-count">${p.Rating} (${p.Reviews?.toLocaleString('en-IN')||0})</span>
+        </div>
+        <div class="card-footer">
+          <div>
+            <div class="price">${INR.format(p.Price_INR)}</div>
+            <div class="price-sub">${p.Stock} in stock</div>
+          </div>
+          ${p.Stock>0
+            ? `<button class="add-btn" onclick="addToCart(event,${JSON.stringify(p).replace(/"/g,'&quot;')})">
+                ${inCart>0?`In Cart (${inCart})`:'Add to Cart'}
+               </button>`
+            : '<div style="color:var(--danger);font-size:12px;font-weight:600">Out of Stock</div>'
+          }
+        </div>
+      </div>
+      ${p.Stock===0?'<div class="out-of-stock">Currently unavailable</div>':''}
+    `;
+    el.appendChild(card);
+  });
+}
+
+function goToProduct(id){ window.location.href=`/product?id=${id}`; }
+function goToCart(){ window.location.href='/checkout'; }
+
+let toastTimer;
+function toast(msg, type='info'){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.className=`toast ${type} show`;
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2200);
+}
+
+async function loadProducts(){
+  try{
+    const res = await fetch(`${API}/api/products`);
+    allProducts = await res.json();
+
+    // Build category tags
+    const cats = [...new Set(allProducts.map(p=>p.Category))];
+    const tagsEl = document.getElementById('categoryTags');
+    cats.forEach(cat=>{
+      const t=document.createElement('span');
+      t.className='tag';t.dataset.cat=cat;t.textContent=cat;
+      t.onclick=()=>filterCategory(t);
+      tagsEl.appendChild(t);
+    });
+
+    renderCatalog();
+    updateBadge();
+  }catch(err){
+    document.getElementById('catalog').innerHTML=
+      '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--danger)">⚠️ Could not connect to server. Make sure Flask is running.</div>';
+  }
+}
+
+loadProducts();
+</script>
+</body>
+</html>

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Product — NovaMart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#060d1a;--surface:#0d1929;--surface2:#111f33;
+  --border:#1a2f4a;--border2:#243852;
+  --text:#e8f0fe;--muted:#7b9abf;--dim:#3d5a7a;
+  --accent:#00d4ff;--accent2:#ff6b35;--accent3:#39d353;
+  --price:#4ade80;--danger:#ff4757;
+  --shadow:0 8px 32px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text)}
+
+header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(6,13,26,.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.nav{max-width:1300px;margin:0 auto;padding:0 24px;height:64px;
+  display:flex;align-items:center;gap:16px;}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text)}
+.logo-mark{
+  width:38px;height:38px;border-radius:10px;
+  background:linear-gradient(135deg,#00d4ff,#0066cc,#39d353);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#fff;
+  box-shadow:0 0 20px rgba(0,212,255,.3);
+}
+.brand-name{font-size:20px;font-weight:700}.brand-name span{color:var(--accent)}
+.breadcrumb{color:var(--muted);font-size:13px;display:flex;align-items:center;gap:6px}
+.breadcrumb a{color:var(--muted);text-decoration:none}.breadcrumb a:hover{color:var(--accent)}
+.nav-right{margin-left:auto;display:flex;gap:10px}
+.btn{
+  border:1px solid var(--border2);background:var(--surface2);
+  color:var(--text);padding:8px 16px;border-radius:8px;cursor:pointer;
+  font-family:'Sora',sans-serif;font-size:13px;font-weight:500;transition:all .2s;
+}
+.btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+.cart-btn{position:relative}
+.cart-badge{
+  position:absolute;top:-6px;right:-6px;
+  background:var(--accent2);color:#fff;border-radius:999px;
+  min-width:20px;height:20px;display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;padding:0 5px;
+}
+
+/* product layout */
+main{max-width:1300px;margin:0 auto;padding:32px 24px}
+.product-grid{display:grid;grid-template-columns:1fr 380px;gap:40px}
+@media(max-width:900px){.product-grid{grid-template-columns:1fr}}
+
+/* image section */
+.img-section{}
+.main-img-wrap{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;height:480px;
+  display:flex;align-items:center;justify-content:center;
+}
+.main-img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.main-img:hover{transform:scale(1.03)}
+.thumbnails{display:flex;gap:10px;margin-top:12px}
+.thumb{
+  width:72px;height:72px;border-radius:8px;overflow:hidden;
+  border:2px solid var(--border);cursor:pointer;transition:border-color .2s;
+}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.thumb.active,.thumb:hover{border-color:var(--accent)}
+
+/* info section */
+.info-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:28px;height:fit-content;
+  position:sticky;top:80px;
+}
+.prod-category{
+  font-size:12px;font-weight:600;letter-spacing:1px;
+  color:var(--accent);text-transform:uppercase;margin-bottom:10px;
+}
+.prod-name{font-size:24px;font-weight:700;line-height:1.3;margin-bottom:12px}
+.rating-row{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.stars{color:#f59e0b;font-size:16px}
+.rating-val{font-weight:600}
+.rating-cnt{color:var(--muted);font-size:13px}
+
+.price-row{
+  display:flex;align-items:baseline;gap:8px;
+  padding:16px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  margin-bottom:16px;
+}
+.price-main{font-family:'Space Mono',monospace;font-size:32px;font-weight:700;color:var(--price)}
+.price-note{color:var(--muted);font-size:13px}
+
+.stock-row{display:flex;align-items:center;gap:8px;margin-bottom:20px}
+.stock-dot{width:8px;height:8px;border-radius:50%;background:var(--accent3)}
+.stock-dot.low{background:var(--accent2)}
+.stock-dot.out{background:var(--danger)}
+.stock-text{font-size:14px;font-weight:500}
+.stock-text.low{color:var(--accent2)}.stock-text.in{color:var(--accent3)}.stock-text.out{color:var(--danger)}
+
+.qty-row{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.qty-label{font-size:14px;color:var(--muted)}
+.qty-ctrl{display:flex;border:1px solid var(--border2);border-radius:8px;overflow:hidden}
+.qty-ctrl button{
+  background:var(--surface2);border:none;color:var(--text);
+  width:36px;height:36px;cursor:pointer;font-size:18px;transition:background .15s;
+}
+.qty-ctrl button:hover{background:var(--border2)}
+.qty-ctrl input{
+  width:48px;text-align:center;background:var(--bg);border:none;
+  color:var(--text);font-family:'Sora',sans-serif;font-size:15px;font-weight:600;outline:none;
+}
+
+.action-btn{
+  width:100%;padding:14px;border-radius:10px;border:none;
+  font-family:'Sora',sans-serif;font-size:15px;font-weight:700;cursor:pointer;
+  transition:all .2s;margin-bottom:10px;
+}
+.add-cart-btn{background:var(--accent);color:#000;}
+.add-cart-btn:hover{opacity:.88;transform:translateY(-1px)}
+.buy-btn{background:var(--accent2);color:#fff;}
+.buy-btn:hover{opacity:.88;transform:translateY(-1px)}
+.action-btn:disabled{background:var(--dim);color:var(--muted);cursor:not-allowed;transform:none}
+
+.delivery-info{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:10px;padding:14px;margin-top:16px;
+  display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted);
+}
+.delivery-info b{color:var(--text)}
+
+/* description */
+.desc-section{margin-top:40px}
+.desc-section h3{font-size:20px;font-weight:600;margin-bottom:16px}
+.desc-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:24px;
+}
+.desc-text{color:var(--muted);line-height:1.8;font-size:14px}
+.features{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:20px}
+.feature{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:10px;padding:14px;font-size:13px;
+}
+.feature-icon{font-size:22px;margin-bottom:6px}
+.feature-title{font-weight:600;margin-bottom:4px}
+.feature-sub{color:var(--muted);font-size:12px}
+
+/* toast */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(8px);
+  padding:10px 18px;border-radius:10px;font-size:13px;font-weight:500;
+  border:1px solid;z-index:9999;opacity:0;transition:all .25s;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{background:#0d2617;border-color:#1b4730;color:#b7f3d0}
+.toast.error{background:#2b1516;border-color:#542427;color:#fecaca}
+.toast.info{background:var(--surface2);border-color:var(--accent);color:var(--accent)}
+
+.skel{animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.skel-block{background:var(--surface2);border-radius:8px}
+
+footer{border-top:1px solid var(--border);margin-top:48px;padding:24px;text-align:center;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="brand" href="/"><div class="logo-mark">NM</div><div class="brand-name">Nova<span>Mart</span></div></a>
+    <div class="breadcrumb">
+      <a href="/">Home</a> › <span id="breadProduct">Product</span>
+    </div>
+    <div class="nav-right">
+      <button class="btn cart-btn" onclick="location.href='/checkout'">
+        🛒 Cart <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="product-grid" id="productGrid">
+    <!-- loaded by JS -->
+    <div style="display:flex;flex-direction:column;gap:12px" class="skel">
+      <div class="skel-block" style="height:480px"></div>
+      <div style="display:flex;gap:10px">
+        <div class="skel-block" style="width:72px;height:72px"></div>
+        <div class="skel-block" style="width:72px;height:72px"></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px" class="skel">
+      <div class="skel-block" style="height:20px;width:40%"></div>
+      <div class="skel-block" style="height:32px"></div>
+      <div class="skel-block" style="height:18px;width:60%"></div>
+      <div class="skel-block" style="height:50px"></div>
+      <div class="skel-block" style="height:48px"></div>
+      <div class="skel-block" style="height:48px"></div>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+<footer>© 2025 NovaMart · Demo store · No real payments processed</footer>
+
+<script>
+const INR=new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0});
+let cart=JSON.parse(localStorage.getItem('nm_cart')||'{}');
+let qty=1; let product=null;
+
+function saveCart(){localStorage.setItem('nm_cart',JSON.stringify(cart));updateBadge();}
+function totalItems(){return Object.values(cart).reduce((s,x)=>s+x.qty,0);}
+function updateBadge(){document.getElementById('cartBadge').textContent=totalItems();}
+function starsHTML(r){const f=Math.floor(r),h=r%1>=.5;return'★'.repeat(f)+(h?'½':'')+'☆'.repeat(5-f-(h?1:0));}
+
+let toastT;
+function toast(msg,type='info'){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.className=`toast ${type} show`;
+  clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2200);
+}
+
+function addToCart(){
+  if(!product||product.Stock===0)return;
+  const cur=cart[product.Product_ID]?.qty||0;
+  const adding=Math.min(qty,product.Stock-cur);
+  if(adding<=0){toast('Max stock reached','warning');return;}
+  cart[product.Product_ID]={qty:cur+adding,price:product.Price_INR,name:product.Name,img:product.Image_URL};
+  saveCart();
+  toast(`${product.Name} added to cart ✓`,'success');
+  document.getElementById('addCartBtn').textContent=`In Cart (${cart[product.Product_ID].qty})`;
+}
+
+function buyNow(){
+  addToCart();
+  setTimeout(()=>location.href='/checkout',300);
+}
+
+function changeQty(delta){
+  qty=Math.max(1,Math.min(qty+delta,product?.Stock||1));
+  document.getElementById('qtyInput').value=qty;
+}
+
+async function loadProduct(){
+  const id=new URLSearchParams(location.search).get('id');
+  if(!id){location.href='/';return;}
+  try{
+    const res=await fetch(`/api/products/${id}`);
+    product=await res.json();
+    if(product.error){location.href='/';return;}
+
+    document.title=`${product.Name} — NovaMart`;
+    document.getElementById('breadProduct').textContent=product.Name;
+
+    const inCart=cart[product.Product_ID]?.qty||0;
+    const isLow=product.Stock>0&&product.Stock<=5;
+    const isOut=product.Stock===0;
+
+    const stockClass=isOut?'out':isLow?'low':'in';
+    const stockText=isOut?'Out of Stock':isLow?`Only ${product.Stock} left!`:`In Stock (${product.Stock} available)`;
+
+    document.getElementById('productGrid').innerHTML=`
+      <div>
+        <div class="main-img-wrap">
+          <img class="main-img" id="mainImg" src="${product.Image_URL}" alt="${product.Name}"
+            onerror="this.src='https://via.placeholder.com/800x480/0d1929/7b9abf?text=No+Image'"/>
+        </div>
+        <div class="thumbnails">
+          <div class="thumb active">
+            <img src="${product.Image_URL}" alt="main"
+              onerror="this.src='https://via.placeholder.com/72/0d1929/7b9abf?text=img'"/>
+          </div>
+        </div>
+        <div class="desc-section">
+          <h3>About this item</h3>
+          <div class="desc-card">
+            <p class="desc-text">${product.Description}</p>
+            <div class="features">
+              <div class="feature">
+                <div class="feature-icon">📦</div>
+                <div class="feature-title">Category</div>
+                <div class="feature-sub">${product.Category}</div>
+              </div>
+              <div class="feature">
+                <div class="feature-icon">⭐</div>
+                <div class="feature-title">Rating</div>
+                <div class="feature-sub">${product.Rating}/5 · ${product.Reviews?.toLocaleString('en-IN')} reviews</div>
+              </div>
+              <div class="feature">
+                <div class="feature-icon">🏷️</div>
+                <div class="feature-title">Price</div>
+                <div class="feature-sub">${INR.format(product.Price_INR)} incl. GST</div>
+              </div>
+              <div class="feature">
+                <div class="feature-icon">🚚</div>
+                <div class="feature-title">Free Delivery</div>
+                <div class="feature-sub">Use code FREESHIP</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="info-card">
+          <div class="prod-category">${product.Category}</div>
+          <h1 class="prod-name">${product.Name}</h1>
+          <div class="rating-row">
+            <span class="stars">${starsHTML(product.Rating)}</span>
+            <span class="rating-val">${product.Rating}</span>
+            <span class="rating-cnt">(${product.Reviews?.toLocaleString('en-IN')} ratings)</span>
+          </div>
+          <div class="price-row">
+            <div class="price-main">${INR.format(product.Price_INR)}</div>
+            <div class="price-note">Inclusive of all taxes</div>
+          </div>
+          <div class="stock-row">
+            <div class="stock-dot ${stockClass}"></div>
+            <div class="stock-text ${stockClass}">${stockText}</div>
+          </div>
+
+          ${!isOut?`
+          <div class="qty-row">
+            <span class="qty-label">Qty:</span>
+            <div class="qty-ctrl">
+              <button onclick="changeQty(-1)">−</button>
+              <input type="number" id="qtyInput" value="1" min="1" max="${product.Stock}"
+                onchange="qty=Math.max(1,Math.min(parseInt(this.value||1),${product.Stock}));this.value=qty"/>
+              <button onclick="changeQty(+1)">+</button>
+            </div>
+          </div>`:''}
+
+          <button class="action-btn add-cart-btn" id="addCartBtn"
+            ${isOut?'disabled':''} onclick="addToCart()">
+            ${isOut?'Out of Stock':inCart>0?`In Cart (${inCart})`:'🛒 Add to Cart'}
+          </button>
+          <button class="action-btn buy-btn" ${isOut?'disabled':''} onclick="buyNow()">
+            ⚡ Buy Now
+          </button>
+
+          <div class="delivery-info">
+            <div>🚚 <b>Delivery:</b> Free with FREESHIP promo</div>
+            <div>🔒 <b>Secure checkout</b> · Demo store</div>
+            <div>↩️ <b>Easy returns</b> · 30-day policy</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }catch(err){
+    document.getElementById('productGrid').innerHTML=
+      '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--danger)">⚠️ Could not load product.</div>';
+  }
+}
+
+updateBadge();
+loadProduct();
+</script>
+</body>
+</html>
