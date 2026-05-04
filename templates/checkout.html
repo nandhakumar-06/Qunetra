@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Checkout — NovaMart</title>
+<title>Checkout — Qunetra</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
@@ -213,7 +213,7 @@ footer{border-top:1px solid var(--border);margin-top:48px;padding:24px;text-alig
 
 <header>
   <div class="nav">
-    <a class="brand" href="/"><div class="logo-mark">NM</div><div class="brand-name">Nova<span>Mart</span></div></a>
+    <a class="brand" href="/"><div class="logo-mark">QN</div><div class="brand-name">Qunetra</div></a>
     <span class="secure-badge">Secure Checkout</span>
   </div>
 </header>
@@ -352,14 +352,14 @@ footer{border-top:1px solid var(--border);margin-top:48px;padding:24px;text-alig
 </main>
 
 <div class="toast" id="toast"></div>
-<footer>© 2025 NovaMart · Demo store · No real payments processed</footer>
+<footer>© 2025 Qunetra · Demo store · No real payments processed</footer>
 
 <script>
 const INR=new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0});
-let cart=JSON.parse(localStorage.getItem('nm_cart')||'{}');
+let cart=JSON.parse(localStorage.getItem('QN_cart')||'{}');
 let promoCode='';let promoData=null;let lastOrder=null;
 
-function saveCart(){localStorage.setItem('nm_cart',JSON.stringify(cart));}
+function saveCart(){localStorage.setItem('QN_cart',JSON.stringify(cart));}
 
 function computeTotals(){
   const subtotal=Object.values(cart).reduce((s,x)=>s+x.price*x.qty,0);
@@ -534,7 +534,7 @@ function downloadReceipt(){
   if(!lastOrder)return;
   const t=lastOrder.totals;
   const lines=[
-    '=== NovaMart Receipt ===',
+    '=== Qunetra Receipt ===',
     `Date:   ${lastOrder.date}`,
     `Order:  ${lastOrder.order_id}`,
     `Auth:   ${lastOrder.auth_id}`,

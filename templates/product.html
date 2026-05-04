@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Product — NovaMart</title>
+<title>Product — Qunetra</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
@@ -143,7 +143,7 @@ main{max-width:1300px;margin:0 auto;padding:32px 24px}
   border-radius:14px;padding:24px;
 }
 .desc-text{color:var(--muted);line-height:1.8;font-size:14px}
-.features{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:20px}
+.features{display:grid;grid-template-columns:repeat(auto-fill,miQNax(200px,1fr));gap:12px;margin-top:20px}
 .feature{
   background:var(--surface2);border:1px solid var(--border);
   border-radius:10px;padding:14px;font-size:13px;
@@ -174,7 +174,7 @@ footer{border-top:1px solid var(--border);margin-top:48px;padding:24px;text-alig
 
 <header>
   <div class="nav">
-    <a class="brand" href="/"><div class="logo-mark">NM</div><div class="brand-name">Nova<span>Mart</span></div></a>
+    <a class="brand" href="/"><div class="logo-mark">QN</div><div class="brand-name">Qunetra</div></a>
     <div class="breadcrumb">
       <a href="/">Home</a> › <span id="breadProduct">Product</span>
     </div>
@@ -208,14 +208,14 @@ footer{border-top:1px solid var(--border);margin-top:48px;padding:24px;text-alig
 </main>
 
 <div class="toast" id="toast"></div>
-<footer>© 2025 NovaMart · Demo store · No real payments processed</footer>
+<footer>© 2025 Qunetra · Demo store · No real payments processed</footer>
 
 <script>
 const INR=new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0});
-let cart=JSON.parse(localStorage.getItem('nm_cart')||'{}');
+let cart=JSON.parse(localStorage.getItem('QN_cart')||'{}');
 let qty=1; let product=null;
 
-function saveCart(){localStorage.setItem('nm_cart',JSON.stringify(cart));updateBadge();}
+function saveCart(){localStorage.setItem('QN_cart',JSON.stringify(cart));updateBadge();}
 function totalItems(){return Object.values(cart).reduce((s,x)=>s+x.qty,0);}
 function updateBadge(){document.getElementById('cartBadge').textContent=totalItems();}
 function starsHTML(r){const f=Math.floor(r),h=r%1>=.5;return'★'.repeat(f)+(h?'½':'')+'☆'.repeat(5-f-(h?1:0));}
@@ -256,7 +256,7 @@ async function loadProduct(){
     product=await res.json();
     if(product.error){location.href='/';return;}
 
-    document.title=`${product.Name} — NovaMart`;
+    document.title=`${product.Name} — Qunetra`;
     document.getElementById('breadProduct').textContent=product.Name;
 
     const inCart=cart[product.Product_ID]?.qty||0;

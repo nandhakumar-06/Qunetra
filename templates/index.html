@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>NovaMart — Tech Store</title>
+<title>Qunetra — Tech Store</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
@@ -109,7 +109,7 @@ main{max-width:1300px;margin:0 auto;padding:32px 24px}
 
 .catalog{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  grid-template-columns:repeat(auto-fill,miQNax(250px,1fr));
   gap:20px;
 }
 
@@ -220,8 +220,8 @@ footer{
 <header>
   <div class="nav">
     <a class="brand" href="/">
-      <div class="logo-mark">NM</div>
-      <div class="brand-name">Nova<span>Mart</span></div>
+      <div class="logo-mark">QN</div>
+      <div class="brand-name">Qunetra</div>
     </a>
     <div class="search-bar">
       <input type="text" id="searchInput" placeholder="Search products…" oninput="filterProducts()"/>
@@ -273,16 +273,16 @@ footer{
 <div class="toast" id="toast"></div>
 
 <footer>
-  © 2025 NovaMart · Demo store · No real payments processed
+  © 2025 Qunetra · Demo store · No real payments processed
 </footer>
 
 <script>
 const INR = new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0});
 const API  = '';        // same origin — Flask serves everything
 let allProducts = [];
-let cart = JSON.parse(localStorage.getItem('nm_cart')||'{}');
+let cart = JSON.parse(localStorage.getItem('QN_cart')||'{}');
 
-function saveCart(){ localStorage.setItem('nm_cart', JSON.stringify(cart)); updateBadge(); }
+function saveCart(){ localStorage.setItem('QN_cart', JSON.stringify(cart)); updateBadge(); }
 function totalItems(){ return Object.values(cart).reduce((s,x)=>s+x.qty,0); }
 function updateBadge(){
   document.getElementById('cartBadge').textContent = totalItems();
